@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "name": "DigEdit Prototype",
+  "version": "1.0",
+  "description": "A Hello World skeleton for the DigEdit project.",
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
