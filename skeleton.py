@@ -11,7 +11,7 @@ logger = logging.getLogger("DigEdit.Fetcher")
 class GraphDataFetcher:
     """
      code for fetching discussion graph data from the Neo4j API.
-        api_url (str): The endpoint URL for the graph data.
+        api_url (str): The  URL for the graph data.
         timeout (int): Request timeout in seconds (crucial for perceived latency).
     """
     
