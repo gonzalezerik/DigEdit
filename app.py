@@ -272,7 +272,7 @@ st.markdown(
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 6px 0;">
         <span style="background:{_R_ORANGE};color:#fff;padding:5px 14px;border-radius:20px;font-weight:800;font-size:13px;letter-spacing:0.02em;box-shadow:0 2px 8px rgba(255,69,0,.35);">r/DigEdit</span>
         <span style="color:{_R_META};font-size:13px;font-weight:700;">live discussion map</span>
-        <span style="margin-left:auto;color:{_R_META};font-size:12px;font-weight:600;">dark canvas · orange OP · blue replies</span>
+        <span style="margin-left:auto;color:{_R_META};font-size:12px;font-weight:600;">dark canvas · orange OP · reply layers alternate between orange and blue</span>
     </div>
     """,
     unsafe_allow_html=True,
@@ -298,6 +298,8 @@ def build_interactive_graph(data_filepath):
             data = json.load(f)
             
         # 1. Add the main Post node
+
+        #temp section, daniel code
         def get_depth(comment_id, id_to_comment, root_id):
             """Calculate depth (number of hops from root post)."""
             depth = 0
@@ -309,6 +311,8 @@ def build_interactive_graph(data_filepath):
                 current_id = parent_id
                 depth += 1
             return depth
+        #temp section, daniel code
+
         
         post = data.get("post", {})
         post_id = post.get("id", "root")
