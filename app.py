@@ -24,6 +24,13 @@ _GRAPH_POST = "#ff4500"
 _GRAPH_COMMENT = "#1e90ff"
 _GRAPH_EDGE = "#555555"
 
+
+#Daniel section test
+#ff4500 orange
+#1e90ff blue
+
+
+
 # --- Configuration ---
 # Makes the layout wide so the graph has plenty of room
 st.set_page_config(page_title="DigEdit", layout="wide", page_icon="🔶")
@@ -247,6 +254,11 @@ with st.sidebar:
             
             # Example of listing top-level comments under the post
             comments = data.get("comments", [])
+
+            #temp section, daniel code
+            id_to_comment = {c["id"]: c for c in comments}
+            #temp section, daniel code
+
             for c in comments[:5]:  # Just showing the first 5 for the skeleton
                 st.write(f"↳ 🗣️ {c['author']}: {c['text'][:20]}...")
             if len(comments) > 5:
@@ -286,6 +298,18 @@ def build_interactive_graph(data_filepath):
             data = json.load(f)
             
         # 1. Add the main Post node
+        def get_depth(comment_id, id_to_comment, root_id):
+            """Calculate depth (number of hops from root post)."""
+            depth = 0
+            current_id = comment_id
+            while current_id != root_id:
+                parent_id = id_to_comment.get(current_id, {}).get("parent_id", root_id)
+                if parent_id == current_id:  # safety to prevent infinite loop
+                    break
+                current_id = parent_id
+                depth += 1
+            return depth
+        
         post = data.get("post", {})
         post_id = post.get("id", "root")
         post_label = "Original Post\n" + (post.get("author", "Unknown"))
@@ -293,18 +317,21 @@ def build_interactive_graph(data_filepath):
         # You can customize node colors, sizes, and hover titles here
         net.add_node(post_id, label=post_label, title=post.get("title", ""), color=_GRAPH_POST, size=30)
         
-        # 2. Add the Comment nodes and link them
-        comments = data.get("comments", [])
+        # 2. Add the Comment nodes with alternating colors based on depth
         for comment in comments:
             c_id = comment["id"]
             p_id = comment["parent_id"]
             c_author = comment.get("author", "[deleted]")
             c_text = comment.get("text", "")
             
-            # Add node (User)
-            net.add_node(c_id, label=c_author, title=c_text, color=_GRAPH_COMMENT, size=15)
+            # Calculate depth
+            depth = get_depth(c_id, id_to_comment, post_id)
             
-            # Add edge (Connection to parent comment or post)
+            # Alternate colors: even depth = orange, odd depth = blue
+            color = _GRAPH_POST if depth % 2 == 0 else _GRAPH_COMMENT
+            
+            # Add node and edge
+            net.add_node(c_id, label=c_author, title=c_text, color=color, size=15)
             net.add_edge(c_id, p_id, color=_GRAPH_EDGE)
             
     else:
@@ -317,6 +344,7 @@ def build_interactive_graph(data_filepath):
 
 # Render the graph in the UI
 graph_html_file = build_interactive_graph(DATA_FILE)
+
 
 # Read the generated HTML and display it within the Streamlit app
 with open(graph_html_file, 'r', encoding='utf-8') as f:
